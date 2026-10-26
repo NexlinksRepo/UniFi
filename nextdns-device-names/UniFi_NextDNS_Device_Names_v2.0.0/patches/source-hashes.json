@@ -1,0 +1,30 @@
+{
+  "dnscrypt-proxy/plugins.go": {
+    "original": "046aa92a50e808e804c32097a265e2ff2a663da37e108f032c104fd02294aa0e",
+    "patched": "d1ff06c4a7b94a232fa5649b1dd48aa67f655caa22de07e7122971ab953b91fa"
+  },
+  "dnscrypt-proxy/proxy.go": {
+    "original": "2b269580dec109c9405a0a6163db1e09b460e28447e437fd0f03f902cb1b44ef",
+    "patched": "44c62c06e73d976c2e8acfb64364a2911d0a7e370c7d72273ed72c89174a150d"
+  },
+  "dnscrypt-proxy/query_processing.go": {
+    "original": "8f5d04a61a7e730691754c914e7aa67e4e0f131032b815cd77a56dc052295594",
+    "patched": "8756e1482c2f04d7bf3406b34b4bacb231dc23328a11af10b6f1b02d38b26d02"
+  },
+  "dnscrypt-proxy/xtransport.go": {
+    "original": "617079f74e54e0ff93752515bd128e9f84ce3641c7de9aa0e2a618ee6efb03d7",
+    "patched": "9598a40286dc6ef38b6fe6544f30f11b97a53e36b63b3a158d07638f3e6f0be5"
+  },
+  "dnscrypt-proxy/nextdns_device_names.go": {
+    "original": null,
+    "patched": "200c5df20a044321e3f87a5d246907ede25e5cd659be7a14b5e41383a93e58d0"
+  },
+  "dnscrypt-proxy/nextdns_device_names_test.go": {
+    "original": null,
+    "patched": "e1e757be7fcb6f5db761a67001aabbc418993e0316aca3552d4daa85cc485942"
+  },
+  "dnscrypt-proxy/nextdns_v2_test.go": {
+    "original": null,
+    "patched": "df6a9fa0bf145610d0b4c8a0bafec3dbe05fa237942f770e8b9734a90f648c5e"
+  }
+}

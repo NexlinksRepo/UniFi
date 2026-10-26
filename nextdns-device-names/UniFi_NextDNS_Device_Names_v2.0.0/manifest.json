@@ -1,0 +1,15 @@
+{
+  "package_version": "2.0.0",
+  "upstream_version": "2.1.14",
+  "upstream_commit": "e27f9b8128827cad5b5c7c6b47a4902daf6b4c26",
+  "native_sha256": "1326620a29a42efe7859fe3e2f7cdc8e8e32c084863f6b98be88e1eab28d567f",
+  "candidate_sha256": "7da57b1d41cf000f85154feeae7d898e07c8739fc3a2b9a30edd103cd7c479b3",
+  "architecture": "linux-arm64",
+  "go_version": "go1.27.3",
+  "created_utc": "2026-10-25T23:41:34.602014+00:00",
+  "updated_utc": "2026-10-25T23:56:17.639480+00:00",
+  "integration": "external-systemd-reconciler",
+  "native_unifi_integration": false,
+  "registry_version": 2,
+  "v1_origin_created_utc": "2026-10-23T16:40:57.373Z"
+}

@@ -1,0 +1,7 @@
+*.zip binary
+*.md text eol=lf
+docs/** text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+# Preserve release source bytes so bundled hashes and source-patch checks work.
+nextdns-device-names/** -text
