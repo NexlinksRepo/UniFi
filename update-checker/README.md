@@ -9,4 +9,4 @@ Discover and optionally install UniFi application updates and UniFi OS firmware 
 
 The versioned script and guide are preserved unchanged from the supplied final v5 ZIP. Run the script on the UniFi console as root; installation requires an interactive confirmation. A UniFi OS update may reboot the console.
 
-Publication checks covered source inspection and file integrity. Live console update discovery and installation were not tested as part of this publication.
+The project owner confirms that v5 has been fully tested and works as intended. Publication checks additionally covered source inspection and file integrity; no independent live-console testing was performed during this repository import.
