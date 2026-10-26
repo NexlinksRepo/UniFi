@@ -6,6 +6,7 @@ Independent UniFi administration tools and integrations by Phil Kinsley.
 
 | Project | Purpose | Stable | Beta | Experimental |
 | --- | --- | --- | --- | --- |
+| [Update Checker](update-checker/) | Discover and optionally install UniFi application and OS updates. | [v5 stable](update-checker/README.md) | — | — |
 | [NextDNS Device Names](nextdns-device-names/) | Add UniFi client names and profile-scoped device IDs to NextDNS DNS-over-HTTPS requests. | None published | [v2.0.0](nextdns-device-names/docs/versions.md#v200--beta) | [v3.0.0](nextdns-device-names/docs/versions.md#v300--experimental) |
 
 **NextDNS v3.0.1 is the planned next stable version. It has not been published.**
@@ -25,6 +26,7 @@ UniFi/
   RELEASES.md                Version/status directory and repository updates
   CHANGELOG.md               Link to project change history
   LICENSE                    Repository license
+  update-checker/            UniFi Update Checker v5 stable script and usage guide
   nextdns-device-names/
     README.md                Project overview and downloads
     CHANGELOG.md             NextDNS changes
