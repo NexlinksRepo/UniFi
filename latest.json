@@ -1,0 +1,7 @@
+{
+  "latest_version": "3.0.0",
+  "status": "experimental",
+  "package": "packages/UniFi_NextDNS_Device_Names_v3.0.0.zip",
+  "source": "nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0",
+  "sha256": "89f8c203088137e8cdb36e6d6f9db6d428896352f02be8d47636112547a0ec34"
+}

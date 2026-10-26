@@ -1,4 +1,6 @@
-# v2 field validation
+# v2 field validation (historical)
+
+Latest version: [v3.0.0](../README.md). This page records v2 results only; use [v3 validation](v3-validation.md) for the current version.
 
 Observed October 25, 2026, on the compatibility baseline identified in the README.
 Times below are America/New_York (EDT). These observations occurred after the

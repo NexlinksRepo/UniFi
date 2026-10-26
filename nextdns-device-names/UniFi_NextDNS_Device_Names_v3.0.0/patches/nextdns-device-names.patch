@@ -1,0 +1,685 @@
+--- a/dnscrypt-proxy/plugins.go
++++ b/dnscrypt-proxy/plugins.go
+@@ -66,6 +66,9 @@
+ }
+ 
+ type PluginsState struct {
++	nextDNSTarget                    bool
++	nextDNSProfile                   string
++	nextDNSDevice                    nextDNSDevice
+ 	requestStart                     time.Time
+ 	requestEnd                       time.Time
+ 	clientProto                      string
+@@ -289,7 +292,8 @@
+ 	dlog.Debugf("Handling query for [%v]", qName)
+ 	pluginsState.qName = qName
+ 	pluginsState.questionMsg = &msg
+-	if len(*pluginsGlobals.queryPlugins) == 0 && len(*pluginsGlobals.loggingPlugins) == 0 {
++	metadataChanged := pluginsState.collectNextDNSDevice(&msg)
++	if len(*pluginsGlobals.queryPlugins) == 0 && len(*pluginsGlobals.loggingPlugins) == 0 && !metadataChanged {
+ 		return packet, nil
+ 	}
+ 	pluginsGlobals.RLock()
+--- a/dnscrypt-proxy/proxy.go
++++ b/dnscrypt-proxy/proxy.go
+@@ -719,6 +719,10 @@
+ 	serverInfo := proxy.serversInfo.getOne()
+ 	if serverInfo != nil {
+ 		serverName = serverInfo.Name
++		pluginsState.nextDNSTarget = serverInfo.Proto == stamps.StampProtoTypeDoH && isNextDNSURL(serverInfo.URL)
++		if pluginsState.nextDNSTarget {
++			pluginsState.nextDNSProfile = nextDNSProfileURL(serverInfo.URL)
++		}
+ 		needsEDNS0Padding = (serverInfo.Proto == stamps.StampProtoTypeDoH || serverInfo.Proto == stamps.StampProtoTypeTLS)
+ 	}
+ 
+--- a/dnscrypt-proxy/query_processing.go
++++ b/dnscrypt-proxy/query_processing.go
+@@ -116,7 +116,7 @@
+ 	tid := TransactionID(query)
+ 	SetTransactionID(query, 0)
+ 	serverInfo.noticeBegin(proxy)
+-	serverResponse, _, tls, _, err := proxy.xTransport.DoHQuery(serverInfo.useGet, serverInfo.URL, query, proxy.timeout)
++	serverResponse, _, tls, _, err := proxy.xTransport.DoHQuery(serverInfo.useGet, serverInfo.URL, query, proxy.timeout, pluginsState.nextDNSHeaders())
+ 	SetTransactionID(query, tid)
+ 
+ 	// Check for stale response if there was an error
+@@ -134,6 +134,8 @@
+ 		serverInfo.noticeFailure(proxy)
+ 		return nil, err
+ 	}
++
++	pluginsState.recordNextDNSProof()
+ 
+ 	// Restore the original transaction ID
+ 	response := serverResponse
+--- a/dnscrypt-proxy/xtransport.go
++++ b/dnscrypt-proxy/xtransport.go
+@@ -513,6 +513,7 @@
+ 	body *[]byte,
+ 	timeout time.Duration,
+ 	compress bool,
++	extraHeaders ...http.Header,
+ ) ([]byte, int, *tls.ConnectionState, time.Duration, error) {
+ 	if timeout <= 0 {
+ 		timeout = xTransport.timeout
+@@ -552,6 +553,20 @@
+ 		header["Content-Type"] = []string{contentType}
+ 	}
+ 	header["Cache-Control"] = []string{"max-stale"}
++	for _, extras := range extraHeaders {
++		for key, values := range extras {
++			header[key] = append([]string(nil), values...)
++		}
++	}
++	if len(extraHeaders) > 0 && len(extraHeaders[0]) > 0 {
++		origin := *url
++		client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
++			if req.URL.Scheme != origin.Scheme || req.URL.Host != origin.Host || len(via) >= 10 {
++				return errors.New("refusing to redirect device headers to another origin")
++			}
++			return nil
++		}
++	}
+ 	if body != nil {
+ 		h := sha512.Sum512(*body)
+ 		qs := url.Query()
+@@ -725,6 +740,7 @@
+ 	url *url.URL,
+ 	body []byte,
+ 	timeout time.Duration,
++	extraHeaders ...http.Header,
+ ) ([]byte, int, *tls.ConnectionState, time.Duration, error) {
+ 	if useGet {
+ 		qs := url.Query()
+@@ -732,9 +748,9 @@
+ 		qs.Add("dns", encBody)
+ 		url2 := *url
+ 		url2.RawQuery = qs.Encode()
+-		return xTransport.Get(&url2, dataType, timeout)
+-	}
+-	return xTransport.Post(url, dataType, dataType, &body, timeout)
++		return xTransport.Fetch("GET", &url2, dataType, "", nil, timeout, false, extraHeaders...)
++	}
++	return xTransport.Fetch("POST", url, dataType, dataType, &body, timeout, false, extraHeaders...)
+ }
+ 
+ func (xTransport *XTransport) DoHQuery(
+@@ -742,8 +758,9 @@
+ 	url *url.URL,
+ 	body []byte,
+ 	timeout time.Duration,
++	extraHeaders ...http.Header,
+ ) ([]byte, int, *tls.ConnectionState, time.Duration, error) {
+-	return xTransport.dohLikeQuery("application/dns-message", useGet, url, body, timeout)
++	return xTransport.dohLikeQuery("application/dns-message", useGet, url, body, timeout, extraHeaders...)
+ }
+ 
+ func (xTransport *XTransport) ObliviousDoHQuery(
+--- /dev/null
++++ b/dnscrypt-proxy/nextdns_device_names.go
+@@ -0,0 +1,251 @@
++package main
++
++// This optional UniFi integration is enabled only by a fresh local registry.
++// EDNS client metadata is accepted only from a loopback forwarder and is removed
++// before a NextDNS request is encrypted. Names never live on a shared transport.
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"net"
++	"net/http"
++	"net/url"
++	"os"
++	"path/filepath"
++	"strings"
++	"sync"
++	"time"
++	"unicode"
++	"unicode/utf8"
++
++	"github.com/miekg/dns"
++)
++
++const nextDNSMACOption = 0xfde9 // dnsmasq's binary add-mac option
++
++type nextDNSDevice struct {
++	Name string `json:"name"`
++	ID   string `json:"id"`
++	MAC  string `json:"mac"`
++}
++
++type nextDNSRegistryData struct {
++	Version  int                            `json:"version"`
++	Enabled  bool                           `json:"enabled"`
++	Expires  int64                          `json:"expires_unix"`
++	ByIP     map[string]nextDNSDevice       `json:"by_ip"`
++	ByMAC    map[string]nextDNSDevice       `json:"by_mac"`
++	Profiles map[string]nextDNSRegistryData `json:"profiles"`
++}
++
++type nextDNSRegistry struct {
++	sync.Mutex
++	path    string
++	checked time.Time
++	data    nextDNSRegistryData
++}
++
++var nextDNSDevices = &nextDNSRegistry{}
++var nextDNSProofLock sync.Mutex
++
++func (r *nextDNSRegistry) file() string {
++	if r.path != "" {
++		return r.path
++	}
++	if p := os.Getenv("NEXTDNS_DEVICE_NAMES_FILE"); p != "" {
++		return p
++	}
++	return "/run/nextdns-device-names-v3/devices.json"
++}
++
++func (r *nextDNSRegistry) current(now time.Time) nextDNSRegistryData {
++	r.Lock()
++	defer r.Unlock()
++	if now.Sub(r.checked) >= 2*time.Second || r.checked.IsZero() {
++		r.checked = now
++		r.data = nextDNSRegistryData{}
++		if st, err := os.Stat(r.file()); err == nil && st.Size() <= 8*1024*1024 {
++			if b, err := os.ReadFile(r.file()); err == nil {
++				var data nextDNSRegistryData
++				if json.Unmarshal(b, &data) == nil && (data.Version == 1 || data.Version == 2) && data.Enabled {
++					r.data = data
++				}
++			}
++		}
++	}
++	if r.data.Expires <= now.Unix() || r.data.Expires > now.Add(5*time.Minute).Unix() {
++		return nextDNSRegistryData{}
++	}
++	return r.data
++}
++
++func nextDNSProfileURL(u *url.URL) string {
++	if !isNextDNSURL(u) {
++		return ""
++	}
++	parts := strings.Split(strings.TrimPrefix(u.Path, "/"), "/")
++	if len(parts) == 0 || len(parts[0]) != 6 {
++		return ""
++	}
++	profile := strings.ToLower(parts[0])
++	for _, c := range profile {
++		if !(c >= '0' && c <= '9') && !(c >= 'a' && c <= 'f') {
++			return ""
++		}
++	}
++	return profile
++}
++
++func isNextDNSURL(u *url.URL) bool {
++	if u == nil || u.Scheme != "https" {
++		return false
++	}
++	host := strings.ToLower(u.Hostname())
++	return host == "dns.nextdns.io" || strings.HasSuffix(host, ".dns.nextdns.io")
++}
++
++func nextDNSLoopback(addr *net.Addr) bool {
++	if addr == nil || *addr == nil {
++		return false
++	}
++	switch a := (*addr).(type) {
++	case *net.UDPAddr:
++		return a.IP.IsLoopback()
++	case *net.TCPAddr:
++		return a.IP.IsLoopback()
++	default:
++		return false
++	}
++}
++
++func validNextDNSName(s string) bool {
++	if s == "" || len(s) > 256 || !utf8.ValidString(s) || s != strings.TrimSpace(s) {
++		return false
++	}
++	for _, ch := range s {
++		if unicode.IsControl(ch) {
++			return false
++		}
++	}
++	return true
++}
++
++// collectNextDNSDevice returns whether it changed the DNS message. It strips
++// metadata even when the collector has expired, so raw MACs never leak upstream.
++func (state *PluginsState) collectNextDNSDevice(msg *dns.Msg) bool {
++	if !nextDNSLoopback(state.clientAddr) {
++		return false
++	}
++	var ip, mac string
++	var ipCount, macCount int
++	invalid, changed := false, false
++	for _, rr := range msg.Extra {
++		opt, ok := rr.(*dns.OPT)
++		if !ok {
++			continue
++		}
++		kept := opt.Option[:0]
++		for _, option := range opt.Option {
++			switch option.Option() {
++			case dns.EDNS0SUBNET:
++				ipCount++
++				changed = true
++				ecs, ok := option.(*dns.EDNS0_SUBNET)
++				if !ok || ecs.SourceScope != 0 {
++					invalid = true
++				} else if ecs.Family == 1 && ecs.SourceNetmask == 32 && ecs.Address.To4() != nil {
++					ip = ecs.Address.To4().String()
++				} else if ecs.Family == 2 && ecs.SourceNetmask == 128 && ecs.Address.To16() != nil && ecs.Address.To4() == nil {
++					ip = ecs.Address.String()
++				} else {
++					invalid = true
++				}
++			case nextDNSMACOption:
++				macCount++
++				changed = true
++				local, ok := option.(*dns.EDNS0_LOCAL)
++				if !ok || len(local.Data) != 6 {
++					invalid = true
++				} else {
++					mac = net.HardwareAddr(local.Data).String()
++				}
++			default:
++				kept = append(kept, option)
++			}
++		}
++		opt.Option = kept
++	}
++	if !state.nextDNSTarget || invalid || ipCount > 1 || macCount > 1 || ipCount+macCount == 0 {
++		return changed
++	}
++	data := nextDNSDevices.current(time.Now())
++	if data.Version == 2 {
++		var ok bool
++		data, ok = data.Profiles[state.nextDNSProfile]
++		if !ok {
++			return changed
++		}
++	}
++	device, found := data.ByIP[ip]
++	if macDevice, ok := data.ByMAC[mac]; mac != "" && ok {
++		if found && device.MAC != "" && device.MAC != mac {
++			return changed // conflicting IP and MAC mappings: omit the label
++		}
++		device, found = macDevice, true
++	} else if found && mac != "" && device.MAC != "" && device.MAC != mac {
++		return changed
++	}
++	if found && validNextDNSName(device.Name) {
++		state.nextDNSDevice = device
++	}
++	return changed
++}
++
++func (state *PluginsState) nextDNSHeaders() http.Header {
++	if !state.nextDNSTarget || !validNextDNSName(state.nextDNSDevice.Name) {
++		return nil
++	}
++	h := make(http.Header)
++	h.Set("X-Device-Name", state.nextDNSDevice.Name)
++	if id := state.nextDNSDevice.ID; len(id) > 0 && len(id) <= 32 && strings.IndexFunc(id, func(c rune) bool {
++		return !(c >= 'A' && c <= 'Z') && !(c >= '2' && c <= '7')
++	}) == -1 {
++		h.Set("X-Device-Id", id)
++	}
++	return h
++}
++
++// Only explicit integration probes produce a proof record. Ordinary browsing
++// does not write query names or device names to a new diagnostic log.
++func (state *PluginsState) recordNextDNSProof() {
++	name := strings.TrimSuffix(strings.ToLower(state.qName), ".")
++	if !strings.HasPrefix(name, "ndn-check-") || !strings.HasSuffix(name, ".example.com") || len(state.nextDNSHeaders()) == 0 {
++		return
++	}
++	nextDNSProofLock.Lock()
++	defer nextDNSProofLock.Unlock()
++	digest := sha256.Sum256([]byte(name))
++	record := map[string]interface{}{
++		"at_unix": time.Now().Unix(), "query_sha256": hex.EncodeToString(digest[:]),
++		"device_name": state.nextDNSDevice.Name, "device_id": state.nextDNSDevice.ID,
++		"profile": state.nextDNSProfile,
++	}
++	b, err := json.Marshal(record)
++	if err != nil {
++		return
++	}
++	file := filepath.Join(filepath.Dir(nextDNSDevices.file()), "proof.json")
++	f, err := os.CreateTemp(filepath.Dir(file), ".proof-*")
++	if err != nil {
++		return
++	}
++	tmp := f.Name()
++	defer os.Remove(tmp)
++	if _, err = f.Write(b); err != nil {
++		f.Close()
++		return
++	}
++	if f.Close() == nil {
++		os.Rename(tmp, file)
++	}
++}
+--- /dev/null
++++ b/dnscrypt-proxy/nextdns_device_names_test.go
+@@ -0,0 +1,262 @@
++package main
++
++import (
++	"crypto/tls"
++	"encoding/base64"
++	"encoding/json"
++	"fmt"
++	"io"
++	"net"
++	"net/http"
++	"net/http/httptest"
++	"net/url"
++	"os"
++	"path/filepath"
++	"strings"
++	"sync"
++	"testing"
++	"time"
++
++	"github.com/miekg/dns"
++)
++
++func installTestRegistry(t *testing.T) {
++	t.Helper()
++	previous := nextDNSDevices
++	file := filepath.Join(t.TempDir(), "devices.json")
++	data := nextDNSRegistryData{Version: 1, Enabled: true, Expires: time.Now().Add(time.Minute).Unix(),
++		ByIP:  map[string]nextDNSDevice{"192.168.1.20": {Name: "DHCP laptop", ID: "ABCDEFG2", MAC: "00:11:22:33:44:55"}},
++		ByMAC: map[string]nextDNSDevice{"00:11:22:33:44:55": {Name: "Office laptop", ID: "ABCDEFG2", MAC: "00:11:22:33:44:55"}}}
++	b, _ := json.Marshal(data)
++	if err := os.WriteFile(file, b, 0600); err != nil {
++		t.Fatal(err)
++	}
++	nextDNSDevices = &nextDNSRegistry{path: file}
++	t.Cleanup(func() { nextDNSDevices = previous })
++}
++
++func metadataMessage() *dns.Msg {
++	m := &dns.Msg{}
++	m.SetQuestion("example.com.", dns.TypeA)
++	m.SetEdns0(1232, true)
++	m.IsEdns0().Option = []dns.EDNS0{
++		&dns.EDNS0_SUBNET{Code: dns.EDNS0SUBNET, Family: 1, SourceNetmask: 32, Address: net.ParseIP("192.168.1.20")},
++		&dns.EDNS0_LOCAL{Code: nextDNSMACOption, Data: []byte{0, 0x11, 0x22, 0x33, 0x44, 0x55}},
++		&dns.EDNS0_PADDING{Padding: []byte{0, 0, 0}},
++	}
++	return m
++}
++
++func metadataState(ip string) PluginsState {
++	var addr net.Addr = &net.UDPAddr{IP: net.ParseIP(ip), Port: 23456}
++	return PluginsState{nextDNSTarget: true, clientAddr: &addr}
++}
++
++func TestNextDNSExtractAndStrip(t *testing.T) {
++	installTestRegistry(t)
++	m, s := metadataMessage(), metadataState("127.0.0.1")
++	if !s.collectNextDNSDevice(m) {
++		t.Fatal("metadata was not stripped")
++	}
++	if got := s.nextDNSHeaders().Get("X-Device-Name"); got != "Office laptop" {
++		t.Fatalf("name = %q", got)
++	}
++	if got := s.nextDNSHeaders().Get("X-Device-Id"); got != "ABCDEFG2" {
++		t.Fatalf("id = %q", got)
++	}
++	if !m.IsEdns0().Do() || len(m.IsEdns0().Option) != 1 || m.IsEdns0().Option[0].Option() != dns.EDNS0PADDING {
++		t.Fatal("stripping damaged DNSSEC/padding or retained client metadata")
++	}
++	if _, err := m.Pack(); err != nil {
++		t.Fatal(err)
++	}
++}
++
++func TestNextDNSTrustAndMalformedMetadata(t *testing.T) {
++	installTestRegistry(t)
++	cases := []struct {
++		name     string
++		change   func(*dns.Msg, *PluginsState)
++		stripped bool
++	}{
++		{"untrusted peer", func(m *dns.Msg, s *PluginsState) { *s = metadataState("192.168.1.100") }, false},
++		{"other provider", func(m *dns.Msg, s *PluginsState) { s.nextDNSTarget = false }, true},
++		{"nil peer", func(m *dns.Msg, s *PluginsState) { s.clientAddr = nil }, false},
++		{"duplicate ecs", func(m *dns.Msg, s *PluginsState) {
++			m.IsEdns0().Option = append(m.IsEdns0().Option, m.IsEdns0().Option[0])
++		}, true},
++		{"duplicate mac", func(m *dns.Msg, s *PluginsState) {
++			m.IsEdns0().Option = append(m.IsEdns0().Option, m.IsEdns0().Option[1])
++		}, true},
++		{"subnet not host", func(m *dns.Msg, s *PluginsState) { m.IsEdns0().Option[0].(*dns.EDNS0_SUBNET).SourceNetmask = 24 }, true},
++		{"bad mac", func(m *dns.Msg, s *PluginsState) { m.IsEdns0().Option[1].(*dns.EDNS0_LOCAL).Data = []byte{1} }, true},
++		{"ip mac mismatch", func(m *dns.Msg, s *PluginsState) { m.IsEdns0().Option[1].(*dns.EDNS0_LOCAL).Data[5] = 0x56 }, true},
++	}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			m, s := metadataMessage(), metadataState("127.0.0.1")
++			tc.change(m, &s)
++			if got := s.collectNextDNSDevice(m); got != tc.stripped {
++				t.Fatalf("stripped=%v", got)
++			}
++			if len(s.nextDNSHeaders()) != 0 {
++				t.Fatal("unexpected device identity")
++			}
++		})
++	}
++}
++
++func TestNextDNSExpiredOrInvalidRegistry(t *testing.T) {
++	installTestRegistry(t)
++	for _, body := range []string{
++		`{}`, `{broken`,
++		`{"version":1,"enabled":true,"expires_unix":1,"by_mac":{"00:11:22:33:44:55":{"name":"Old"}}}`,
++		fmt.Sprintf(`{"version":1,"enabled":false,"expires_unix":%d}`, time.Now().Add(time.Minute).Unix()),
++	} {
++		os.WriteFile(nextDNSDevices.file(), []byte(body), 0600)
++		nextDNSDevices.checked = time.Time{}
++		m, s := metadataMessage(), metadataState("127.0.0.1")
++		if !s.collectNextDNSDevice(m) || len(s.nextDNSHeaders()) != 0 {
++			t.Fatal("registry did not fail closed")
++		}
++	}
++}
++
++func TestNextDNSIPv6AndTCPClientMetadata(t *testing.T) {
++	installTestRegistry(t)
++	m := metadataMessage()
++	m.IsEdns0().Option[0] = &dns.EDNS0_SUBNET{Code: dns.EDNS0SUBNET, Family: 2, SourceNetmask: 128, Address: net.ParseIP("fd00::20")}
++	var peer net.Addr = &net.TCPAddr{IP: net.ParseIP("::1"), Port: 1234}
++	s := PluginsState{nextDNSTarget: true, clientAddr: &peer}
++	if !s.collectNextDNSDevice(m) || s.nextDNSHeaders().Get("X-Device-Name") != "Office laptop" {
++		t.Fatal("IPv6 metadata or TCP loopback client was not identified")
++	}
++}
++
++func TestNextDNSIPOnlyFallback(t *testing.T) {
++	installTestRegistry(t)
++	m, s := metadataMessage(), metadataState("127.0.0.1")
++	m.IsEdns0().Option = m.IsEdns0().Option[:1]
++	if !s.collectNextDNSDevice(m) || s.nextDNSHeaders().Get("X-Device-Name") != "DHCP laptop" {
++		t.Fatal("IP-only lookup failed")
++	}
++}
++
++func TestNextDNSProviderAndHeaderValidation(t *testing.T) {
++	for raw, expected := range map[string]bool{
++		"https://dns.nextdns.io/abcdef": true, "https://doh1.dns.nextdns.io/abcdef": true,
++		"http://dns.nextdns.io/abcdef": false, "https://dns.nextdns.io.evil.example/": false,
++		"https://evilnextdns.io/": false, "https://example.com/dns.nextdns.io": false,
++	} {
++		u, _ := url.Parse(raw)
++		if isNextDNSURL(u) != expected {
++			t.Fatal(raw)
++		}
++	}
++	for _, name := range []string{"", "bad\r\nX-Evil: yes", "bad\x00", strings.Repeat("a", 257), " padded "} {
++		s := PluginsState{nextDNSTarget: true, nextDNSDevice: nextDNSDevice{Name: name}}
++		if len(s.nextDNSHeaders()) != 0 {
++			t.Fatalf("unsafe header: %q", name)
++		}
++	}
++	if !validNextDNSName("Phil's iPhone") || !validNextDNSName("Büro laptop") {
++		t.Fatal("valid names rejected")
++	}
++}
++
++func TestNextDNSNoPluginFastPathStillStrips(t *testing.T) {
++	installTestRegistry(t)
++	m := metadataMessage()
++	packet, _ := m.Pack()
++	s := metadataState("::1")
++	s.maxPayloadSize = 1232
++	queries, logs := []Plugin{}, []Plugin{}
++	g := PluginsGlobals{queryPlugins: &queries, loggingPlugins: &logs}
++	out, err := s.ApplyQueryPlugins(&g, packet, false)
++	if err != nil {
++		t.Fatal(err)
++	}
++	var unpacked dns.Msg
++	if err := unpacked.Unpack(out); err != nil {
++		t.Fatal(err)
++	}
++	if len(unpacked.IsEdns0().Option) != 1 || s.nextDNSHeaders().Get("X-Device-Name") != "Office laptop" {
++		t.Fatal("fast path lost metadata changes")
++	}
++}
++
++func TestNextDNSConcurrentHTTPHeaders(t *testing.T) {
++	var mu sync.Mutex
++	seen := make(map[string]int)
++	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		name := r.Header.Get("X-Device-Name")
++		var body []byte
++		if r.Method == "GET" {
++			body, _ = base64.RawURLEncoding.DecodeString(r.URL.Query().Get("dns"))
++		} else {
++			body, _ = io.ReadAll(r.Body)
++		}
++		var msg dns.Msg
++		if err := msg.Unpack(body); err != nil {
++			t.Error(err)
++			w.WriteHeader(400)
++			return
++		}
++		expected := strings.TrimSuffix(msg.Question[0].Name, ".example.com.")
++		if name != expected {
++			t.Errorf("header %q, query identity %q", name, expected)
++		}
++		mu.Lock()
++		seen[name]++
++		mu.Unlock()
++		msg.Response = true
++		response, _ := msg.Pack()
++		w.Header().Set("Content-Type", "application/dns-message")
++		w.Write(response)
++	}))
++	server.EnableHTTP2 = true
++	server.StartTLS()
++	defer server.Close()
++	x := NewXTransport()
++	x.transport = server.Client().Transport.(*http.Transport).Clone()
++	x.transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} // isolated test server only
++	x.transport.DialContext = (&net.Dialer{}).DialContext
++	u, _ := url.Parse(server.URL)
++	defer x.transport.CloseIdleConnections()
++	var wg sync.WaitGroup
++	for i := 0; i < 60; i++ {
++		wg.Add(1)
++		go func(i int) {
++			defer wg.Done()
++			name := fmt.Sprintf("device-%d", i)
++			msg := &dns.Msg{}
++			msg.SetQuestion(name+".example.com.", dns.TypeA)
++			body, _ := msg.Pack()
++			s := PluginsState{nextDNSTarget: true, nextDNSDevice: nextDNSDevice{Name: name, ID: "ABCDEFG2"}}
++			_, _, _, _, err := x.DoHQuery(i%2 == 0, u, body, 5*time.Second, s.nextDNSHeaders())
++			if err != nil {
++				t.Error(err)
++			}
++		}(i)
++	}
++	wg.Wait()
++	if len(seen) != 60 {
++		t.Fatalf("received %d identities", len(seen))
++	}
++}
++
++func TestNextDNSRedirectDoesNotLeakHeaders(t *testing.T) {
++	arrived := false
++	target := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { arrived = true }))
++	defer target.Close()
++	origin := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { http.Redirect(w, r, target.URL, 302) }))
++	defer origin.Close()
++	x := NewXTransport()
++	x.transport = origin.Client().Transport.(*http.Transport).Clone()
++	x.transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} // isolated test server only
++	u, _ := url.Parse(origin.URL)
++	_, _, _, _, err := x.DoHQuery(true, u, []byte{0, 1}, time.Second, http.Header{"X-Device-Name": {"Private device"}})
++	if err == nil || arrived {
++		t.Fatal("device headers followed a cross-origin redirect")
++	}
++}
+--- /dev/null
++++ b/dnscrypt-proxy/nextdns_v2_test.go
+@@ -0,0 +1,45 @@
++package main
++
++import (
++	"encoding/json"
++	"net/url"
++	"os"
++	"testing"
++	"time"
++)
++
++func TestNextDNSV2ProfilesNeverCross(t *testing.T) {
++	installTestRegistry(t)
++	data := nextDNSRegistryData{Version: 2, Enabled: true, Expires: time.Now().Add(time.Minute).Unix(), Profiles: map[string]nextDNSRegistryData{
++		"abcdef": {ByMAC: map[string]nextDNSDevice{"00:11:22:33:44:55": {Name: "Office", ID: "AAAAAAA2"}}},
++		"123456": {ByMAC: map[string]nextDNSDevice{"00:11:22:33:44:55": {Name: "Other profile", ID: "BBBBBBB2"}}},
++	}}
++	b, _ := json.Marshal(data)
++	if err := os.WriteFile(nextDNSDevices.file(), b, 0600); err != nil {
++		t.Fatal(err)
++	}
++	nextDNSDevices.checked = time.Time{}
++	for profile, wanted := range map[string]string{"abcdef": "Office", "123456": "Other profile", "bad": ""} {
++		m, s := metadataMessage(), metadataState("127.0.0.1")
++		s.nextDNSProfile = profile
++		s.collectNextDNSDevice(m)
++		if got := s.nextDNSHeaders().Get("X-Device-Name"); got != wanted {
++			t.Fatalf("profile %s got %s", profile, got)
++		}
++	}
++}
++
++func TestNextDNSV2ProfileURL(t *testing.T) {
++	for raw, wanted := range map[string]string{
++		"https://dns.nextdns.io/ABCDEF":        "abcdef",
++		"https://dns.nextdns.io/abcdef/device": "abcdef",
++		"https://dns.nextdns.io/abcdefg":       "",
++		"https://example.com/abcdef":           "",
++		"https://dns.nextdns.io/xyzxyz":        "",
++	} {
++		u, _ := url.Parse(raw)
++		if nextDNSProfileURL(u) != wanted {
++			t.Fatal(raw)
++		}
++	}
++}
