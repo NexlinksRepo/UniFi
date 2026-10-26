@@ -1,14 +1,10 @@
-# Documentation
+# Documentation moved into the project folder
 
-**Latest version: v3.0.0 (experimental).**
+Start with [NextDNS documentation](../nextdns-device-names/docs/README.md).
 
-- [Download](../packages/UniFi_NextDNS_Device_Names_v3.0.0.zip)
-- [Install and use v3](../nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/README.md)
-- [Current validation and upgrade notes](v3-validation.md)
-- [Changelog](../CHANGELOG.md)
-- [Historical versions](versions.md)
+- [Version history and status](../nextdns-device-names/docs/versions.md)
+- [v2.0.0 beta field validation](../nextdns-device-names/docs/v2-field-validation.md)
+- [v3.0.0 experimental validation and upgrade](../nextdns-device-names/docs/v3-validation.md)
+- [Repository release directory](../RELEASES.md)
 
-Versioned ZIPs and their exact source snapshots are preserved. A historical
-README inside an older version's directory describes that version; it does not
-identify the latest package. Use the repository README and latest.json for the
-current version.
+This page preserves the former documentation URL.

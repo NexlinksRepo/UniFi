@@ -1,77 +1,64 @@
 # UniFi projects
 
-## Latest version: NextDNS Device Names v3.0.0 (experimental)
+Independent UniFi administration tools and integrations by Phil Kinsley.
 
-Experimental external integration that adds UniFi client names and profile-scoped
-device IDs to NextDNS DNS-over-HTTPS requests. This is not a native UniFi feature
-or an official Ubiquiti/NextDNS package.
+## Project directory
 
-- [Download the v3.0.0 package](packages/UniFi_NextDNS_Device_Names_v3.0.0.zip)
-- [Usage instructions](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/README.md)
-- [Source and tests](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/)
-- [Requirements and limitations](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/V3-REQUIREMENTS.md)
-- [Package validation](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/TEST-RESULTS.md)
-- [Current validation and upgrade notes](docs/v3-validation.md)
-- [Changelog](CHANGELOG.md)
-- [Version history](docs/versions.md)
+| Project | Purpose | Stable | Beta | Experimental |
+| --- | --- | --- | --- | --- |
+| [NextDNS Device Names](nextdns-device-names/) | Add UniFi client names and profile-scoped device IDs to NextDNS DNS-over-HTTPS requests. | None published | [v2.0.0](nextdns-device-names/docs/versions.md#v200--beta) | [v3.0.0](nextdns-device-names/docs/versions.md#v300--experimental) |
 
-### Scope
+**NextDNS v3.0.1 is the planned next stable version. It has not been published.**
+The newest available version is v3.0.0, which remains experimental.
 
-The compatibility baseline is an inspected Dream Machine Pro Max running UniFi OS
-6.0.15 and UniFi Network 11.0.97, with an exact stock dnscrypt-proxy 2.1.14 binary
-hash check. Discovery enumerates the supported local proxy/forwarder layout and
-refuses ambiguous or unsupported paths. It is not universal support for all
-gateways, firmware, or resolver arrangements.
+- [Release directory and repository updates](RELEASES.md)
+- [NextDNS downloads, status, and usage](nextdns-device-names/README.md)
+- [NextDNS changelog](nextdns-device-names/CHANGELOG.md)
+- [NextDNS validation and upgrade notes](nextdns-device-names/docs/README.md)
+- [GitHub Releases](https://github.com/NexlinksRepo/UniFi/releases)
 
-The installer prints detected forwarder instances, configured listening
-interfaces, ports, and NextDNS paths. It retains a five-minute trial and an
-explicit commit step. Commit enables an external systemd service to restore the
-integration after reboot and reconcile supported generated-configuration changes.
-
-### What v3 fixes
-
-Routine client-name refreshes now keep the current valid registry enabled while
-the replacement is prepared, then publish it atomically. Failed source lookups
-never extend the old expiry. Changed attribution scope, expired/invalid data,
-and failed health checks retain the fail-closed behavior.
-
-The five-minute trial and explicit commit remain. Disable v2 before installing
-v3; v3 uses separate service/runtime paths and is not silently installed over v2.
-
-**Validation:** 85 Python tests passed locally and on the ARM64 gateway. The native
-NextDNS Go tests and isolated UDP/TCP/header diagnostics passed. The user reports
-that committed v3 survived a gateway reboot, as v2 did. This v3 result has not
-been independently checked through SSH. Long-duration validation remains open.
-See the current validation notes above.
-
-The default name lookup uses read-only access to UniFi's private PostgreSQL
-schema, not a supported public interface. The optional official API adapter has
-fixture validation only. Native UniFi configuration generation remains outside
-the package's control.
-
-Read the usage and validation limits before installation. Expect a brief DNS
-interruption during activation or rollback. Confirm real client names and UniFi
-cloud access during the trial before committing.
-
-### Package integrity
-
-The uploaded ZIP is the existing v3.0.0 artifact, without modifications:
+## Repository layout
 
 ```text
-SHA-256: 89f8c203088137e8cdb36e6d6f9db6d428896352f02be8d47636112547a0ec34
+UniFi/
+  README.md                  Project directory
+  RELEASES.md                Version/status directory and repository updates
+  CHANGELOG.md               Link to project change history
+  LICENSE                    Repository license
+  nextdns-device-names/
+    README.md                Project overview and downloads
+    CHANGELOG.md             NextDNS changes
+    releases.json            Project version/status metadata
+    docs/                    Validation, version history, and upgrade notes
+    UniFi_NextDNS_Device_Names_v2.0.0/  Original v2 source and tests
+    UniFi_NextDNS_Device_Names_v3.0.0/  Original v3 source and tests
+  packages/                  Existing published ZIP download URLs
+  docs/                      Compatibility links to project documentation
+  latest.json                Compatibility metadata for the newest NextDNS package
 ```
 
-The package also contains SHA256SUMS and a manifest with candidate/stock binary
-hashes. The source tree mirrors that archive. Later field observations are
-documented separately so the original artifact and its validation history remain
-clear.
+Each project has a permanent folder. Experimental, beta, and stable are release
+statuses rather than separate copies of a project's files. Existing versioned
+source snapshots and ZIPs retain their published contents and paths. Future
+projects should keep their documentation and tests inside their own project folder.
 
-### Licensing
+## NextDNS scope
 
-The repository's existing [LICENSE](LICENSE) is retained. The bundled upstream
-code retains its [ISC license notice](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/LICENSE)
-and [third-party notices](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/THIRD_PARTY_LICENSES.txt).
-Preserve the applicable notices when redistributing the source or archive.
+NextDNS Device Names is an external integration, not a native UniFi feature or
+an official Ubiquiti/NextDNS package. The inspected compatibility baseline is a
+Dream Machine Pro Max running UniFi OS 6.0.15 and UniFi Network 11.0.97, with an
+exact stock dnscrypt-proxy 2.1.14 binary hash check. It is not universal gateway
+or firmware support.
 
-Private gateway logs, operational credentials, actual NextDNS profile configuration, and
-diagnostic archives are not included in this repository.
+Both available versions retain a five-minute trial and explicit commit step.
+Read the version-specific requirements, validation limits, and upgrade
+instructions before installation. Beta status does not remove the limitations
+recorded for v2, and the v3 refresh fix does not establish long-duration stability.
+
+## License and privacy
+
+See [LICENSE](LICENSE). Bundled upstream code retains its own license and
+third-party notices; preserve those notices when redistributing it.
+
+Private gateway logs, credentials, actual NextDNS profile configuration, and
+diagnostic archives are excluded from this repository.
