@@ -5,14 +5,16 @@
 | Channel | Version | Download | Source and instructions | Validation |
 | --- | --- | --- | --- | --- |
 | Stable | None published | — | — | — |
-| Beta | v2.0.0 | [Original ZIP](packages/UniFi_NextDNS_Device_Names_v2.0.0.zip) | [v2 README](nextdns-device-names/UniFi_NextDNS_Device_Names_v2.0.0/README.md) | [v2 field results](nextdns-device-names/docs/v2-field-validation.md) |
-| Experimental | v3.0.0 | [Original ZIP](packages/UniFi_NextDNS_Device_Names_v3.0.0.zip) | [v3 README](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/README.md) | [v3 validation and upgrade notes](nextdns-device-names/docs/v3-validation.md) |
+| Beta | [v2.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) | [Original ZIP](packages/UniFi_NextDNS_Device_Names_v2.0.0.zip) | [v2 README](nextdns-device-names/UniFi_NextDNS_Device_Names_v2.0.0/README.md) | [v2 field results](nextdns-device-names/docs/v2-field-validation.md) |
+| Experimental | [v3.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) | [Original ZIP](packages/UniFi_NextDNS_Device_Names_v3.0.0.zip) | [v3 README](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/README.md) | [v3 validation and upgrade notes](nextdns-device-names/docs/v3-validation.md) |
 | Planned stable | v3.0.1 | Not published | Planned next version | No v3.0.1 validation recorded |
 
 **Latest available: v3.0.0 experimental.** "Latest" identifies the newest version,
 not a stable recommendation. There is no stable NextDNS release at present.
 
-v2.0.0 is classified as beta and v3.0.0 as experimental. These labels were
+v2.0.0 is classified as beta and v3.0.0 as experimental. Both now have GitHub
+pre-release entries created October 26, 2026. Each entry links to its original
+project ZIP; GitHub's automatic source archives contain the whole repository. These labels were
 documented on October 26, 2026; the original October 25, 2026 package dates,
 contents, checksums, and validation records are preserved. Historical READMEs
 inside those snapshots retain their original wording.

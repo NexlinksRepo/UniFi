@@ -4,6 +4,8 @@
 
 ## v2.0.0 — Beta
 
+[GitHub beta pre-release](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) — entry created October 26, 2026.
+
 - [Download original v2 ZIP](../../packages/UniFi_NextDNS_Device_Names_v2.0.0.zip)
 - [Source and tests](../UniFi_NextDNS_Device_Names_v2.0.0/)
 - [Installation](../UniFi_NextDNS_Device_Names_v2.0.0/README.md)
@@ -17,6 +19,8 @@ refresh can briefly disable enrichment; v3 addresses that interval. The beta
 label does not remove the documented limitations.
 
 ## v3.0.0 — Experimental
+
+[GitHub experimental pre-release](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) — entry created October 26, 2026.
 
 - [Download original v3 ZIP](../../packages/UniFi_NextDNS_Device_Names_v3.0.0.zip)
 - [Source and tests](../UniFi_NextDNS_Device_Names_v3.0.0/)
@@ -45,6 +49,9 @@ v3.0.1 as part of this reorganization.
 Experimental, beta, and stable are explicit statuses. Version numbers alone do
 not establish maturity. Project-prefixed tags use
 `nextdns-device-names/v<version>`; beta and experimental releases are pre-releases.
+
+Each GitHub pre-release links to the original project ZIP. GitHub's automatic
+source archives include the whole repository, so use the project download link.
 
 The archives and their exact source snapshots retain their original contents,
 checksums, and dated validation records. Historical READMEs retain their original

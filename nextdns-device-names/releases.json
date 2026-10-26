@@ -12,7 +12,11 @@
       "published": true,
       "package": "packages/UniFi_NextDNS_Device_Names_v2.0.0.zip",
       "source": "nextdns-device-names/UniFi_NextDNS_Device_Names_v2.0.0",
-      "validation": "nextdns-device-names/docs/v2-field-validation.md"
+      "validation": "nextdns-device-names/docs/v2-field-validation.md",
+      "tag": "nextdns-device-names/v2.0.0",
+      "github_release": "https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0",
+      "github_release_published_at": "2026-10-26T11:15:41Z",
+      "sha256": "75bb5e13e2805c93db04c109138eb4ef6ce5c56a3e8928f360d983d34854e70f"
     },
     {
       "version": "3.0.0",
@@ -21,7 +25,10 @@
       "package": "packages/UniFi_NextDNS_Device_Names_v3.0.0.zip",
       "source": "nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0",
       "sha256": "89f8c203088137e8cdb36e6d6f9db6d428896352f02be8d47636112547a0ec34",
-      "validation": "nextdns-device-names/docs/v3-validation.md"
+      "validation": "nextdns-device-names/docs/v3-validation.md",
+      "tag": "nextdns-device-names/v3.0.0",
+      "github_release": "https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0",
+      "github_release_published_at": "2026-10-26T11:16:25Z"
     },
     {
       "version": "3.0.1",

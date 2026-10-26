@@ -9,8 +9,8 @@ Ubiquiti/NextDNS package or native UniFi feature.
 | Channel | Version | Download | Instructions | Validation |
 | --- | --- | --- | --- | --- |
 | Stable | None published | — | — | — |
-| Beta | v2.0.0 | [ZIP](../packages/UniFi_NextDNS_Device_Names_v2.0.0.zip) | [v2 usage](UniFi_NextDNS_Device_Names_v2.0.0/README.md) | [v2 field results](docs/v2-field-validation.md) |
-| Experimental | v3.0.0 | [ZIP](../packages/UniFi_NextDNS_Device_Names_v3.0.0.zip) | [v3 usage](UniFi_NextDNS_Device_Names_v3.0.0/README.md) | [v3 validation and upgrade](docs/v3-validation.md) |
+| Beta | [v2.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) | [ZIP](../packages/UniFi_NextDNS_Device_Names_v2.0.0.zip) | [v2 usage](UniFi_NextDNS_Device_Names_v2.0.0/README.md) | [v2 field results](docs/v2-field-validation.md) |
+| Experimental | [v3.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) | [ZIP](../packages/UniFi_NextDNS_Device_Names_v3.0.0.zip) | [v3 usage](UniFi_NextDNS_Device_Names_v3.0.0/README.md) | [v3 validation and upgrade](docs/v3-validation.md) |
 | Planned stable | v3.0.1 | Not published | Planned next version | No validation recorded |
 
 **Newest available: v3.0.0 experimental. No stable release is published.**
