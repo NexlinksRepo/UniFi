@@ -26,6 +26,12 @@ interfaces, ports, and NextDNS paths. It retains a five-minute trial and an
 explicit commit step. Commit enables an external systemd service to restore the
 integration after reboot and reconcile supported generated-configuration changes.
 
+**Reboot behavior:** a committed v2 installation was verified to start
+automatically after an actual gateway reboot on October 25, 2026. An uncommitted
+five-minute trial is not enabled for startup. The ZIP's original TEST-RESULTS.md
+is a build-time validation snapshot that predates this field test; use the
+[subsequent field-validation note](docs/v2-field-validation.md) for current results.
+
 The default name lookup uses read-only access to UniFi's private PostgreSQL
 schema, not a supported public interface. The optional official API adapter has
 fixture validation only. Native UniFi configuration generation remains outside
