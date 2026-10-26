@@ -4,6 +4,11 @@
 
 ## 3.0.0 - 2026-10-25 (experimental)
 
+### Field validation
+
+- The user reports that committed v3 survived a gateway reboot, as v2 did.
+  This result has not been independently verified through SSH.
+
 ### Fixed
 
 - Routine client-name refreshes no longer write `enabled: false` before reading

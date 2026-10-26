@@ -15,8 +15,11 @@ conditions still disable enrichment.
 - The full Go proxy suite passed locally. Native ARM64 NextDNS test groups passed.
 - The isolated candidate passed UDP/TCP DNS and two-client header diagnostics.
 - The staged ZIP and all included file checksums were verified on the gateway.
-- Stock DNS remained active during isolated validation; v3 was staged without a
-  production install or commit by the investigator.
+- Stock DNS remained active during isolated validation; v3 was initially staged
+  without a production install or commit by the investigator.
+- Subsequent user-reported field result: committed v3 survived a gateway reboot,
+  as v2 did. This report has not been independently verified through SSH; no
+  post-reboot service or registry diagnostics were collected for this update.
 
 Some negative unit tests intentionally print errors about expired trials, and
 mocked lifecycle tests print successful trial/commit messages. Those outputs are
@@ -52,10 +55,9 @@ default, with an optional official API adapter requiring live validation.
 
 ## Limits
 
-Production v3 reboot recovery, the exact native DNS Shield server-list-refresh
-event, actual ISP failover, IPv6 frontend coverage, and long-duration stability
-remain unverified. [v2's field results](v2-field-validation.md) establish what was
+The exact native DNS Shield server-list-refresh event, actual ISP failover,
+IPv6 frontend coverage, and long-duration stability remain unverified. [v2's field results](v2-field-validation.md) establish what was
 observed on v2 only and should not be presented as v3 results.
 
 The release ZIP's TEST-RESULTS.md is its build-time record. This page adds later
-staging validation without changing the published archive bytes.
+staging and user-reported field validation without changing the published archive bytes.

@@ -39,9 +39,10 @@ The five-minute trial and explicit commit remain. Disable v2 before installing
 v3; v3 uses separate service/runtime paths and is not silently installed over v2.
 
 **Validation:** 85 Python tests passed locally and on the ARM64 gateway. The native
-NextDNS Go tests and isolated UDP/TCP/header diagnostics passed. v2's reboot and
-Network application restart were field-verified, but those results are not v3
-reboot or long-duration validation. See the current validation notes above.
+NextDNS Go tests and isolated UDP/TCP/header diagnostics passed. The user reports
+that committed v3 survived a gateway reboot, as v2 did. This v3 result has not
+been independently checked through SSH. Long-duration validation remains open.
+See the current validation notes above.
 
 The default name lookup uses read-only access to UniFi's private PostgreSQL
 schema, not a supported public interface. The optional official API adapter has
