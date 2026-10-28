@@ -45,8 +45,8 @@ Published October 28, 2026. [Download](../../packages/UniFi_NextDNS_Device_Names
 [validation/limitations](v3.0.1-validation.md).
 
 Promotes the unchanged v3 runtime after reboot and DNS Shield regeneration
-observations. Known-good UniFi OS 6.0.15 and Network 11.0.97; OS and app upgrades
-are untested. See release notes for the possible reconciliation interruption.
+observations. Known-good UniFi OS 6.0.15 and Network 11.0.97; Network app upgrades and other OS upgrade paths
+are untested; 6.0.15 → 6.0.16 recovery was observed on October 28. See release notes for the possible reconciliation interruption.
 
 ## History and naming
 

@@ -42,8 +42,11 @@ version-specific README and requirements before installation. Disable v2 before
 installing v3; the two versions use separate service/runtime paths.
 
 Committed v3 reboot and two DNS Shield regeneration events have been verified.
-See the v3.0.1 release notes for evidence and limitations. OS and Network app
-upgrades are untested. The stable patch preserves the v3 runtime.
+The owner also upgraded UniFi OS 6.0.15 → 6.0.16; SSH checks confirmed automatic
+service recovery and healthy enrichment afterward. Network remained 11.0.97.
+Network app upgrades and other OS upgrade paths remain untested. See the
+v3.0.1 release notes for evidence and limitations. The stable patch preserves
+the v3 runtime.
 
 ## Files and historical packages
 

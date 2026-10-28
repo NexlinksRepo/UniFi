@@ -4,6 +4,25 @@
 
 [Downloads and status](README.md) Â· [Version history](docs/versions.md)
 
+### UniFi OS upgrade observation — October 28, 2026
+
+The owner upgraded the Dream Machine Pro Max from UniFi OS 6.0.15 to **6.0.16**
+(build `UDMPROMAX.al324.v6.0.16.8ea8e65.261028.1047`). Network remained
+**11.0.97**, package `11.0.97-37231-1`.
+
+Read-only SSH checks confirmed the gateway booted at 16:22:41 Eastern and the
+committed NextDNS v3 service started automatically at 16:23:25. At 17:41,
+the service and registry were active, desired state was enabled/committed,
+health and registry-refresh failures were zero, and no service warnings appeared
+in the preceding 30 minutes. The registry contained 98 IP and 81 MAC mappings.
+
+This is a successful **6.0.15 → 6.0.16 upgrade observation on one gateway**,
+using the installed v3.0.0 runtime that v3.0.1 preserves unchanged. It is not
+proof of uninterrupted DNS during the upgrade or general future-upgrade support;
+no synthetic client DNS probes were sent. Network application upgrades remain
+untested. Known-good observed OS versions are 6.0.15 and 6.0.16 with Network
+11.0.97. The published v3.0.1 ZIP remains its original build-time snapshot.
+
 ## v3.0.1 stable — October 28, 2026
 
 This is the stable release of the v3 runtime, scoped to the known-good Dream
