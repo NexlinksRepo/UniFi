@@ -1,8 +1,11 @@
 ## v3.0.1 stable — October 28, 2026
 
 This is the stable release of the v3 runtime, scoped to the known-good Dream
-Machine Pro Max running **UniFi OS 6.0.15** and **UniFi Network 11.0.97**
-(Network package 11.0.97-37231-1; stock dnscrypt-proxy 2.1.14 hash is enforced).
+Machine Pro Max running **UniFi OS 6.0.16** and **UniFi Network 11.0.97**
+(Network package 11.0.97-37231-1; UniFi Core 6.0.130; dnscrypt-proxy 2.1.14).
+These versions were checked through SSH on October 28, 2026. The package
+enforces the expected stock binary hash before activation; while active, the
+proxy path contains the patched candidate, whose SHA-256 matched its manifest.
 It remains an independent external integration alongside UniFi OS and Network.
 Stable is the project release classification, not official vendor support.
 

@@ -31,7 +31,7 @@ health/discovery conditions still disable enrichment.
 
 ## Requirements and validation limits
 
-The inspected baseline is a Dream Machine Pro Max with UniFi OS 6.0.15, Network
+The inspected baseline is a Dream Machine Pro Max with UniFi OS 6.0.16, Network
 11.0.97, Linux ARM64, and an exact dnscrypt-proxy 2.1.14 stock binary hash check.
 Discovery rejects unsupported or ambiguous layouts. The default name source
 uses read-only access to UniFi's private PostgreSQL schema; the optional

@@ -4,6 +4,9 @@
 
 [Downloads and status](README.md) Â· [Version history](docs/versions.md)
 
+Current checked compatibility: UniFi OS **6.0.16**, Network **11.0.97**
+(package 11.0.97-37231-1), UniFi Core **6.0.130**, dnscrypt-proxy **2.1.14**.
+
 ### UniFi OS upgrade observation — October 28, 2026
 
 The owner upgraded the Dream Machine Pro Max from UniFi OS 6.0.15 to **6.0.16**
