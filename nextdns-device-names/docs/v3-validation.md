@@ -1,66 +1,46 @@
-# v3.0.0 validation and upgrade notes
+# v3 field validation
 
-**Latest available: v3.0.0 (experimental).** Prepared October 25, 2026.
+## v3.0.1 stable — October 28, 2026
 
-v2.0.0 is classified as beta. No stable version is published. v3.0.1 is the
-planned next stable release; it has no validation record or download yet.
+This is the stable release of the v3 runtime, scoped to the known-good Dream
+Machine Pro Max running **UniFi OS 6.0.15** and **UniFi Network 11.0.97**
+(Network package 11.0.97-37231-1; stock dnscrypt-proxy 2.1.14 hash is enforced).
+It remains an independent external integration alongside UniFi OS and Network.
+Stable is the project release classification, not official vendor support.
 
-v3 fixes the disabled-registry interval observed during ordinary v2 refreshes.
-It prepares the replacement while the existing unexpired registry remains
-available and publishes the complete file atomically. A failed source lookup
-cannot extend the old expiry. Attribution changes and unsafe health/discovery
-conditions still disable enrichment.
+### Verified behavior
 
-## Completed
+- Committed v3 survives a gateway reboot: owner-confirmed and subsequently
+  checked through SSH with the service active, desired state committed, registry
+  enabled, and no health failures.
+- Survives native DNS Shield server-list regeneration/restart. Captured October
+  26 at 21:23:25 Eastern with reconciliation at 21:23:29, and October 27 at
+  21:23:56 with reconciliation at 21:23:59. Surrounding 20-second samples
+  retained enabled registries with zero failures or alerts.
+- v3.0.1 retains the v3.0.0 runtime and proxy binaries; this patch updates release
+  metadata and documentation. It does not introduce a runtime behavior change.
 
-- 85 Python tests passed locally, from the extracted release archive, and on the
-  ARM64 gateway. Fourteen new tests cover the refresh fix and its safety limits.
-- The full Go proxy suite passed locally. Native ARM64 NextDNS test groups passed.
-- The isolated candidate passed UDP/TCP DNS and two-client header diagnostics.
-- The staged ZIP and all included file checksums were verified on the gateway.
-- Stock DNS remained active during isolated validation; v3 was initially staged
-  without a production install or commit by the investigator.
-- Subsequent user-reported field result: committed v3 survived a gateway reboot,
-  as v2 did. This report has not been independently verified through SSH; no
-  post-reboot service or registry diagnostics were collected for this update.
+### Known limitations and untested scenarios
 
-Some negative unit tests intentionally print errors about expired trials, and
-mocked lifecycle tests print successful trial/commit messages. Those outputs are
-not evidence that the package installed itself on the gateway.
+- DNS resolution or device-name enrichment may be interrupted while native
+  regeneration and external reconciliation occur. Allow for a possible brief
+  gap on the order of the 20-second monitoring interval; **20 seconds is not a
+  measured outage or a guaranteed maximum**. Reconciliation completed in about
+  3–4 seconds in the captured events, but passive samples cannot prove continuous
+  client DNS service between samples. This limitation follows from operating
+  outside and alongside UniFi OS and the Network application.
+- **Network application upgrades and UniFi OS upgrades are untested.** Reboot
+  and DNS Shield refresh results do not establish upgrade compatibility. Changes
+  to the native binary or private PostgreSQL schema may disable enrichment.
+- Other gateway/firmware combinations, actual ISP failover, IPv6 frontend
+  coverage, and the optional official API adapter against a live gateway remain
+  unvalidated. The default PostgreSQL interface is private and unsupported.
+- The extended passive monitoring window is still in progress; its final report
+  is not claimed as completed validation.
 
-## Upgrade
+The five-minute installation trial, explicit commit, health rollback, and
+option to disable enrichment remain. v3.0.1 uses the existing v3 service and
+runtime paths. No in-place upgrade: disable the existing installation before
+starting a new trial. Publishing this package does not upgrade the gateway.
 
-Disable the currently running version before installing v3. For v2:
-
-```sh
-python3 /data/nextdns-device-names-v2/v2.py disable
-```
-
-Then extract the v3 package and start its five-minute trial:
-
-```sh
-cd /tmp/UniFi_NextDNS_Device_Names_v3.0.0
-sh test.sh
-sh install.sh
-```
-
-Verify client names, DNS resolution, UniFi cloud access, and applicable WAN
-policies. Only when ready:
-
-```sh
-sh commit.sh
-```
-
-The v3 install directory, runtime registry, and service are versioned separately
-from v2. No in-place upgrade or automatic commit is performed. The code remains
-an external integration using the private PostgreSQL compatibility backend by
-default, with an optional official API adapter requiring live validation.
-
-## Limits
-
-The exact native DNS Shield server-list-refresh event, actual ISP failover,
-IPv6 frontend coverage, and long-duration stability remain unverified. [v2's field results](v2-field-validation.md) establish what was
-observed on v2 only and should not be presented as v3 results.
-
-The release ZIP's TEST-RESULTS.md is its build-time record. This page adds later
-staging and user-reported field validation without changing the published archive bytes.
+Earlier staging records remain inside the original v3.0.0 archive.

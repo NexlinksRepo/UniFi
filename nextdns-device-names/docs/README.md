@@ -1,4 +1,5 @@
 # NextDNS documentation
+**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](../RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
 
 **Beta: v2.0.0. Experimental: v3.0.0. Stable: none published.**
 The planned next stable version is v3.0.1; it is not published.

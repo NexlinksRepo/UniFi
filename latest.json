@@ -1,13 +1,13 @@
 {
-  "latest_version": "3.0.0",
-  "status": "experimental",
-  "package": "packages/UniFi_NextDNS_Device_Names_v3.0.0.zip",
-  "source": "nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0",
-  "sha256": "89f8c203088137e8cdb36e6d6f9db6d428896352f02be8d47636112547a0ec34",
+  "latest_version": "3.0.1",
+  "status": "stable",
+  "package": "packages/UniFi_NextDNS_Device_Names_v3.0.1.zip",
+  "source": "nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.1",
+  "sha256": "ae19926396bc96ab534f922bde76ffeb97163c110645cd64329f530920619379",
   "project": "nextdns-device-names",
-  "stable_version": null,
+  "stable_version": "3.0.1",
   "beta_version": "2.0.0",
   "experimental_version": "3.0.0",
-  "planned_stable_version": "3.0.1",
+  "planned_stable_version": null,
   "release_directory": "nextdns-device-names/releases.json"
 }

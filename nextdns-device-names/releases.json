@@ -1,10 +1,10 @@
 {
   "project": "nextdns-device-names",
-  "latest_version": "3.0.0",
-  "stable_version": null,
+  "latest_version": "3.0.1",
+  "stable_version": "3.0.1",
   "beta_version": "2.0.0",
   "experimental_version": "3.0.0",
-  "planned_stable_version": "3.0.1",
+  "planned_stable_version": null,
   "versions": [
     {
       "version": "2.0.0",
@@ -32,9 +32,14 @@
     },
     {
       "version": "3.0.1",
-      "status": "planned",
-      "planned_status": "stable",
-      "published": false
+      "status": "stable",
+      "published": true,
+      "package": "packages/UniFi_NextDNS_Device_Names_v3.0.1.zip",
+      "source": "nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.1",
+      "sha256": "ae19926396bc96ab534f922bde76ffeb97163c110645cd64329f530920619379",
+      "validation": "nextdns-device-names/docs/v3.0.1-validation.md",
+      "tag": "nextdns-device-names/v3.0.1",
+      "github_release": "https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.1"
     }
   ],
   "path_base": "repository-root"

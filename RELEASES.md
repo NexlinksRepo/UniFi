@@ -1,16 +1,14 @@
 # Release directory
+**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](nextdns-device-names/RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
 
 ## NextDNS Device Names
 
 | Channel | Version | Download | Source and instructions | Validation |
 | --- | --- | --- | --- | --- |
-| Stable | None published | — | — | — |
+| Stable | v3.0.1 | [ZIP](packages/UniFi_NextDNS_Device_Names_v3.0.1.zip) | [Usage](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.1/README.md) | [Validation](nextdns-device-names/docs/v3.0.1-validation.md) |
 | Beta | [v2.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) | [Original ZIP](packages/UniFi_NextDNS_Device_Names_v2.0.0.zip) | [v2 README](nextdns-device-names/UniFi_NextDNS_Device_Names_v2.0.0/README.md) | [v2 field results](nextdns-device-names/docs/v2-field-validation.md) |
 | Experimental | [v3.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) | [Original ZIP](packages/UniFi_NextDNS_Device_Names_v3.0.0.zip) | [v3 README](nextdns-device-names/UniFi_NextDNS_Device_Names_v3.0.0/README.md) | [v3 validation and upgrade notes](nextdns-device-names/docs/v3-validation.md) |
-| Planned stable | v3.0.1 | Not published | Planned next version | No v3.0.1 validation recorded |
 
-**Latest available: v3.0.0 experimental.** "Latest" identifies the newest version,
-not a stable recommendation. There is no stable NextDNS release at present.
 
 v2.0.0 is classified as beta and v3.0.0 as experimental. Both now have GitHub
 pre-release entries created October 26, 2026. Each entry links to its original

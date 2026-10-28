@@ -1,10 +1,10 @@
 # NextDNS version history
+**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](../RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
 
-**Latest available: v3.0.0 experimental. Stable: none published.**
 
-## v2.0.0 — Beta
+## v2.0.0 â€” Beta
 
-[GitHub beta pre-release](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) — entry created October 26, 2026.
+[GitHub beta pre-release](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) â€” entry created October 26, 2026.
 
 - [Download original v2 ZIP](../../packages/UniFi_NextDNS_Device_Names_v2.0.0.zip)
 - [Source and tests](../UniFi_NextDNS_Device_Names_v2.0.0/)
@@ -18,9 +18,9 @@ trial, explicit commit, and an external boot/reconciliation service. Its ordinar
 refresh can briefly disable enrichment; v3 addresses that interval. The beta
 label does not remove the documented limitations.
 
-## v3.0.0 — Experimental
+## v3.0.0 â€” Experimental
 
-[GitHub experimental pre-release](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) — entry created October 26, 2026.
+[GitHub experimental pre-release](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) â€” entry created October 26, 2026.
 
 - [Download original v3 ZIP](../../packages/UniFi_NextDNS_Device_Names_v3.0.0.zip)
 - [Source and tests](../UniFi_NextDNS_Device_Names_v3.0.0/)
@@ -38,11 +38,15 @@ Original ZIP SHA-256:
 89f8c203088137e8cdb36e6d6f9db6d428896352f02be8d47636112547a0ec34
 ```
 
-## v3.0.1 — Planned stable
+## v3.0.1 — Stable
 
-The next planned version is v3.0.1, intended to be labelled stable when
-published. No download, tag, runtime changes, or validation record exists for
-v3.0.1 as part of this reorganization.
+Published October 28, 2026. [Download](../../packages/UniFi_NextDNS_Device_Names_v3.0.1.zip),
+[usage](../UniFi_NextDNS_Device_Names_v3.0.1/README.md), and
+[validation/limitations](v3.0.1-validation.md).
+
+Promotes the unchanged v3 runtime after reboot and DNS Shield regeneration
+observations. Known-good UniFi OS 6.0.15 and Network 11.0.97; OS and app upgrades
+are untested. See release notes for the possible reconciliation interruption.
 
 ## History and naming
 
@@ -60,4 +64,4 @@ wording; this directory records the current release classifications.
 v1.0.2 is an earlier prototype discussed in historical test notes. Its package
 is not published in this repository.
 
-[Project overview](../README.md) · [Project changelog](../CHANGELOG.md) · [Repository releases](../../RELEASES.md)
+[Project overview](../README.md) Â· [Project changelog](../CHANGELOG.md) Â· [Repository releases](../../RELEASES.md)

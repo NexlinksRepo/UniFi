@@ -1,0 +1,62 @@
+# v3 requirement status
+
+- Routine refresh preserves the current valid registry and publishes a complete
+  replacement atomically. Failures never renew old data's expiry.
+- Reuse after a failed lookup requires unchanged profile/forwarding scope,
+  unexpired valid data, and healthy native listeners. Unsafe conditions and
+  explicit disable still turn enrichment off.
+- Inherited resolver discovery, request-specific profile-scoped headers,
+  interface summary, regeneration reconciliation, and disable/rollback remain.
+- Five-minute trial and explicit commit remain. v3 uses its own versioned service,
+  install directory, and runtime registry. Disable v2 before starting v3.
+- The default name source remains the private PostgreSQL compatibility backend;
+  the optional official API adapter still requires live API validation.
+- This is an external integration. It does not make UniFi generate settings
+  natively. Reboot/provisioning/failover behavior must be validated for v3 rather
+  than inferred from v2's field results.
+
+See CHANGELOG.md, TEST-RESULTS.md, and README.md for details.
+
+
+## v3.0.1 stable — October 28, 2026
+
+This is the stable release of the v3 runtime, scoped to the known-good Dream
+Machine Pro Max running **UniFi OS 6.0.15** and **UniFi Network 11.0.97**
+(Network package 11.0.97-37231-1; stock dnscrypt-proxy 2.1.14 hash is enforced).
+It remains an independent external integration alongside UniFi OS and Network.
+Stable is the project release classification, not official vendor support.
+
+### Verified behavior
+
+- Committed v3 survives a gateway reboot: owner-confirmed and subsequently
+  checked through SSH with the service active, desired state committed, registry
+  enabled, and no health failures.
+- Survives native DNS Shield server-list regeneration/restart. Captured October
+  26 at 21:23:25 Eastern with reconciliation at 21:23:29, and October 27 at
+  21:23:56 with reconciliation at 21:23:59. Surrounding 20-second samples
+  retained enabled registries with zero failures or alerts.
+- v3.0.1 retains the v3.0.0 runtime and proxy binaries; this patch updates release
+  metadata and documentation. It does not introduce a runtime behavior change.
+
+### Known limitations and untested scenarios
+
+- DNS resolution or device-name enrichment may be interrupted while native
+  regeneration and external reconciliation occur. Allow for a possible brief
+  gap on the order of the 20-second monitoring interval; **20 seconds is not a
+  measured outage or a guaranteed maximum**. Reconciliation completed in about
+  3–4 seconds in the captured events, but passive samples cannot prove continuous
+  client DNS service between samples. This limitation follows from operating
+  outside and alongside UniFi OS and the Network application.
+- **Network application upgrades and UniFi OS upgrades are untested.** Reboot
+  and DNS Shield refresh results do not establish upgrade compatibility. Changes
+  to the native binary or private PostgreSQL schema may disable enrichment.
+- Other gateway/firmware combinations, actual ISP failover, IPv6 frontend
+  coverage, and the optional official API adapter against a live gateway remain
+  unvalidated. The default PostgreSQL interface is private and unsupported.
+- The extended passive monitoring window is still in progress; its final report
+  is not claimed as completed validation.
+
+The five-minute installation trial, explicit commit, health rollback, and
+option to disable enrichment remain. v3.0.1 uses the existing v3 service and
+runtime paths. No in-place upgrade: disable the existing installation before
+starting a new trial. Publishing this package does not upgrade the gateway.

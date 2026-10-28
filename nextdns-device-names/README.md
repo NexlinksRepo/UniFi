@@ -1,4 +1,5 @@
 # NextDNS Device Names
+**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
 
 Add UniFi client names and profile-scoped device IDs to NextDNS DNS-over-HTTPS
 requests. This is an independent external integration, not an official
@@ -8,13 +9,10 @@ Ubiquiti/NextDNS package or native UniFi feature.
 
 | Channel | Version | Download | Instructions | Validation |
 | --- | --- | --- | --- | --- |
-| Stable | None published | — | — | — |
+| Stable | v3.0.1 | [ZIP](../packages/UniFi_NextDNS_Device_Names_v3.0.1.zip) | [Usage](UniFi_NextDNS_Device_Names_v3.0.1/README.md) | [Validation](docs/v3.0.1-validation.md) |
 | Beta | [v2.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv2.0.0) | [ZIP](../packages/UniFi_NextDNS_Device_Names_v2.0.0.zip) | [v2 usage](UniFi_NextDNS_Device_Names_v2.0.0/README.md) | [v2 field results](docs/v2-field-validation.md) |
 | Experimental | [v3.0.0](https://github.com/NexlinksRepo/UniFi/releases/tag/nextdns-device-names%2Fv3.0.0) | [ZIP](../packages/UniFi_NextDNS_Device_Names_v3.0.0.zip) | [v3 usage](UniFi_NextDNS_Device_Names_v3.0.0/README.md) | [v3 validation and upgrade](docs/v3-validation.md) |
-| Planned stable | v3.0.1 | Not published | Planned next version | No validation recorded |
 
-**Newest available: v3.0.0 experimental. No stable release is published.**
-v3.0.1 is the planned next stable version, not an available download.
 
 v3 fixes the interval when ordinary v2 registry refreshes temporarily disabled
 device-name enrichment. It prepares a replacement while the current valid
@@ -43,11 +41,9 @@ Both versions require a five-minute trial and an explicit commit. Read the
 version-specific README and requirements before installation. Disable v2 before
 installing v3; the two versions use separate service/runtime paths.
 
-v2 has documented gateway reboot and Network application restart observations.
-v3 has 85 recorded Python test passes, Go/native tests, and isolated DNS/header
-checks. The owner reports that committed v3 survived a reboot; that report has
-not been independently checked through SSH. Long-duration stability, the exact
-DNS Shield server-list-refresh event, and other limits remain open.
+Committed v3 reboot and two DNS Shield regeneration events have been verified.
+See the v3.0.1 release notes for evidence and limitations. OS and Network app
+upgrades are untested. The stable patch preserves the v3 runtime.
 
 ## Files and historical packages
 

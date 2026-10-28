@@ -1,4 +1,5 @@
 # Published NextDNS packages
+**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](../nextdns-device-names/RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
 
 These ZIP files remain at their original paths so existing download links work.
 
@@ -7,7 +8,6 @@ These ZIP files remain at their original paths so existing download links work.
 | [v2.0.0 ZIP](UniFi_NextDNS_Device_Names_v2.0.0.zip) | Beta |
 | [v3.0.0 ZIP](UniFi_NextDNS_Device_Names_v3.0.0.zip) | Experimental |
 
-No stable package is published. v3.0.1 is the planned next stable version.
 
 [Project overview](../nextdns-device-names/README.md) · [Validation and version history](../nextdns-device-names/docs/versions.md) · [GitHub Releases](https://github.com/NexlinksRepo/UniFi/releases)
 

@@ -1,0 +1,20 @@
+{
+  "package_version": "3.0.1",
+  "upstream_version": "2.1.14",
+  "upstream_commit": "e27f9b8128827cad5b5c7c6b47a4902daf6b4c26",
+  "native_sha256": "1326620a29a42efe7859fe3e2f7cdc8e8e32c084863f6b98be88e1eab28d567f",
+  "candidate_sha256": "361f6b1372ce9de9a61e4d3f9688e7c533b8ee722da13f1704cac6570a421c71",
+  "architecture": "linux-arm64",
+  "go_version": "go1.27.3",
+  "created_utc": "2026-10-28T11:55:25.387917+00:00",
+  "updated_utc": "2026-10-28T11:56:49.192280+00:00",
+  "integration": "external-systemd-reconciler",
+  "native_unifi_integration": false,
+  "registry_version": 2,
+  "v1_origin_created_utc": "2026-10-23T16:40:57.373Z",
+  "previous_version": "3.0.0",
+  "previous_created_utc": "2026-10-25T23:41:34.602014+00:00",
+  "v3_created_utc": "2026-10-26T01:02:23.302953+00:00",
+  "v301_created_utc": "2026-10-28T11:55:25.387917+00:00",
+  "release_status": "stable"
+}
