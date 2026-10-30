@@ -65,3 +65,7 @@ v1.0.2 is an earlier prototype discussed in historical test notes. Its package
 is not published in this repository.
 
 [Project overview](../README.md) Â· [Project changelog](../CHANGELOG.md) Â· [Repository releases](../../RELEASES.md)
+
+Current upgrade evidence: Network **11.0.99** (11.0.99-37236-1), UniFi OS
+**6.0.16**, Core **6.0.130**, dnscrypt-proxy **2.1.14**, checked October 30.
+See the current v3.0.1 release notes for immediate post-upgrade findings and limits.

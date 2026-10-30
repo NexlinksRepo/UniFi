@@ -47,7 +47,7 @@ projects should keep their documentation and tests inside their own project fold
 
 NextDNS Device Names is an external integration, not a native UniFi feature or
 an official Ubiquiti/NextDNS package. The inspected compatibility baseline is a
-Dream Machine Pro Max running UniFi OS 6.0.16 and UniFi Network 11.0.97, with an
+Dream Machine Pro Max running UniFi OS 6.0.16 and UniFi Network 11.0.99, with an
 exact stock dnscrypt-proxy 2.1.14 binary hash check. It is not universal gateway
 or firmware support.
 
@@ -63,3 +63,7 @@ third-party notices; preserve those notices when redistributing it.
 
 Private gateway logs, credentials, actual NextDNS profile configuration, and
 diagnostic archives are excluded from this repository.
+
+Current upgrade evidence: Network **11.0.99** (11.0.99-37236-1), UniFi OS
+**6.0.16**, Core **6.0.130**, dnscrypt-proxy **2.1.14**, checked October 30.
+See the current v3.0.1 release notes for immediate post-upgrade findings and limits.

@@ -4,8 +4,33 @@
 
 [Downloads and status](README.md) Â· [Version history](docs/versions.md)
 
-Current checked compatibility: UniFi OS **6.0.16**, Network **11.0.97**
-(package 11.0.97-37231-1), UniFi Core **6.0.130**, dnscrypt-proxy **2.1.14**.
+Current checked compatibility: UniFi OS **6.0.16**, Network **11.0.99**
+(package 11.0.99-37236-1), UniFi Core **6.0.130**, dnscrypt-proxy **2.1.14**.
+
+### Network application upgrade observation — October 30, 2026
+
+Package logs confirm Network upgraded from **11.0.97-37231-1** to
+**11.0.99-37236-1** at 10:15:33 Eastern and completed installation at 10:17:49.
+The Network service was active/running with that same activation timestamp.
+UniFi OS remained **6.0.16** and UniFi Core remained **6.0.130**; the gateway
+boot time remained October 28 at 16:22:41 Eastern.
+
+Read-only SSH checks at 10:21–10:22 Eastern found the committed v3 enrichment
+service active, with its activation timestamp unchanged from October 28 at
+16:23:25. Health and registry-refresh failure counters were zero, last_error
+was null, and the name registry was enabled and unexpired (101 IP mappings,
+83 MAC mappings). All three discovered forwarders remained managed. The active
+dnscrypt-proxy reported **2.1.14** and its SHA-256 matched the existing patched
+candidate manifest. No enrichment service warning/error journal entries were
+returned for the preceding two hours.
+
+This records successful immediate post-upgrade operation for **Network
+11.0.97 → 11.0.99 on UniFi OS 6.0.16** on this Dream Machine Pro Max. It does
+not establish uninterrupted client DNS during installation, correct attribution
+of every live request, or long-duration stability on 11.0.99. No synthetic DNS
+probes or restarts were performed. Other application/OS upgrade paths remain
+untested. The installed runtime remains v3.0.0, unchanged in stable v3.0.1;
+the release ZIP and original build-time records are preserved.
 
 ### UniFi OS upgrade observation — October 28, 2026
 

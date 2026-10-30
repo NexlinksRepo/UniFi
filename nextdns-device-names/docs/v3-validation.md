@@ -3,9 +3,9 @@
 ## v3.0.1 stable — October 28, 2026
 
 This is the stable release of the v3 runtime, scoped to the known-good Dream
-Machine Pro Max running **UniFi OS 6.0.16** and **UniFi Network 11.0.97**
-(Network package 11.0.97-37231-1; UniFi Core 6.0.130; dnscrypt-proxy 2.1.14).
-These versions were checked through SSH on October 28, 2026. The package
+Machine Pro Max running **UniFi OS 6.0.16** and **UniFi Network 11.0.99**
+(Network package 11.0.99-37236-1; UniFi Core 6.0.130; dnscrypt-proxy 2.1.14).
+These current versions were checked through SSH on October 30, 2026. The package
 enforces the expected stock binary hash before activation; while active, the
 proxy path contains the patched candidate, whose SHA-256 matched its manifest.
 It remains an independent external integration alongside UniFi OS and Network.
@@ -32,7 +32,7 @@ Stable is the project release classification, not official vendor support.
   3–4 seconds in the captured events, but passive samples cannot prove continuous
   client DNS service between samples. This limitation follows from operating
   outside and alongside UniFi OS and the Network application.
-- **Network application upgrades and other OS upgrade paths remain untested.**
+- **Other application and OS upgrade paths remain untested.**
   The 6.0.15 → 6.0.16 observation is recorded below. Changes
   to the native binary or private PostgreSQL schema may disable enrichment.
 - Other gateway/firmware combinations, actual ISP failover, IPv6 frontend
@@ -63,6 +63,31 @@ in the preceding 30 minutes. The registry contained 98 IP and 81 MAC mappings.
 This is a successful **6.0.15 → 6.0.16 upgrade observation on one gateway**,
 using the installed v3.0.0 runtime that v3.0.1 preserves unchanged. It is not
 proof of uninterrupted DNS during the upgrade or general future-upgrade support;
-no synthetic client DNS probes were sent. Network application upgrades remain
-untested. Known-good observed OS versions are 6.0.15 and 6.0.16 with Network
+no synthetic client DNS probes were sent. The Network application upgrade was still untested at this October 28 check;
+the October 30 observation below adds that evidence. Known-good observed OS versions are 6.0.15 and 6.0.16 with Network
 11.0.97. The published v3.0.1 ZIP remains its original build-time snapshot.
+
+### Network application upgrade observation — October 30, 2026
+
+Package logs confirm Network upgraded from **11.0.97-37231-1** to
+**11.0.99-37236-1** at 10:15:33 Eastern and completed installation at 10:17:49.
+The Network service was active/running with that same activation timestamp.
+UniFi OS remained **6.0.16** and UniFi Core remained **6.0.130**; the gateway
+boot time remained October 28 at 16:22:41 Eastern.
+
+Read-only SSH checks at 10:21–10:22 Eastern found the committed v3 enrichment
+service active, with its activation timestamp unchanged from October 28 at
+16:23:25. Health and registry-refresh failure counters were zero, last_error
+was null, and the name registry was enabled and unexpired (101 IP mappings,
+83 MAC mappings). All three discovered forwarders remained managed. The active
+dnscrypt-proxy reported **2.1.14** and its SHA-256 matched the existing patched
+candidate manifest. No enrichment service warning/error journal entries were
+returned for the preceding two hours.
+
+This records successful immediate post-upgrade operation for **Network
+11.0.97 → 11.0.99 on UniFi OS 6.0.16** on this Dream Machine Pro Max. It does
+not establish uninterrupted client DNS during installation, correct attribution
+of every live request, or long-duration stability on 11.0.99. No synthetic DNS
+probes or restarts were performed. Other application/OS upgrade paths remain
+untested. The installed runtime remains v3.0.0, unchanged in stable v3.0.1;
+the release ZIP and original build-time records are preserved.
