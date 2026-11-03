@@ -4,8 +4,36 @@
 
 [Downloads and status](README.md) Â· [Version history](docs/versions.md)
 
-Current checked compatibility: UniFi OS **6.0.16**, Network **11.0.99**
-(package 11.0.99-37236-1), UniFi Core **6.0.130**, dnscrypt-proxy **2.1.14**.
+Latest observed compatibility: UniFi OS **6.0.17** (SSH), Network **11.0.99**
+(UI), checked November 3. The October 30 package/Core/proxy details below were
+not rechecked in this observation.
+
+### UniFi OS 6.0.17 post-upgrade observation — November 3, 2026
+
+Read-only SSH checks on the Dream Machine Pro Max confirmed **UniFi OS 6.0.17**
+and the existing NextDNS v3 integration active after the owner's OS update.
+The UniFi UI showed Network **11.0.99**. Core/package versions and the active
+proxy binary hash were not rechecked during this observation; their October 30
+values above are historical evidence.
+
+- The enabled systemd service started automatically at **10:38:47 EST**.
+- Its journal recorded “Reconciled native configuration regeneration” at
+  **10:39:30** and **10:42:21 EST**.
+- At approximately **10:45 EST**, runtime state reported active/stage active,
+  last_error null, zero health failures, and zero registry-refresh failures.
+- All three discovered forwarders remained managed; the device registry was
+  enabled and unexpired. Desired state remained enabled and committed.
+- Fresh NextDNS web log entries showed names for multiple client devices and
+  the gateway. Some requests still appeared under the public IP only, so this
+  does not establish attribution of every request.
+
+No reinstall, restart, configuration change, or new gateway commit was performed
+during these checks. The evidence supports automatic recovery of the existing
+committed integration on this gateway after the update. The owner observed a
+temporary naming gap; its duration and exact cause were not measured.
+Continuous DNS availability, long-term stability on 6.0.17, and compatibility
+with other gateways or future firmware are not established. Raw private logs,
+device identities, profile configuration, and credentials are not published.
 
 ### Network application upgrade observation — October 30, 2026
 

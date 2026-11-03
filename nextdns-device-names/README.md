@@ -31,7 +31,7 @@ health/discovery conditions still disable enrichment.
 
 ## Requirements and validation limits
 
-The inspected baseline is a Dream Machine Pro Max with UniFi OS 6.0.16, Network
+The inspected baseline is a Dream Machine Pro Max with observed operation on UniFi OS 6.0.17, Network
 11.0.99, Linux ARM64, and an exact dnscrypt-proxy 2.1.14 stock binary hash check.
 Discovery rejects unsupported or ambiguous layouts. The default name source
 uses read-only access to UniFi's private PostgreSQL schema; the optional
@@ -45,6 +45,9 @@ Committed v3 reboot and two DNS Shield regeneration events have been verified.
 The owner also upgraded UniFi OS 6.0.15 → 6.0.16; SSH checks confirmed automatic
 service recovery and healthy enrichment afterward. Network remained 11.0.97.
 Network 11.0.97 → 11.0.99 immediate post-upgrade operation was verified October 30.
+On November 3, OS 6.0.17 post-upgrade checks confirmed automatic service startup,
+configuration reconciliation, healthy runtime counters, and fresh named NextDNS
+log entries without reinstalling. The naming-gap duration was not measured.
 Other application and OS upgrade paths remain untested. See the
 v3.0.1 release notes for evidence and limitations. The stable patch preserves
 the v3 runtime.
@@ -72,6 +75,8 @@ Names and device IDs are sent to NextDNS by the integration. Actual profile
 configuration, device identities, private gateway logs, and credentials are
 excluded from this public repository.
 
-Current upgrade evidence: Network **11.0.99** (11.0.99-37236-1), UniFi OS
-**6.0.16**, Core **6.0.130**, dnscrypt-proxy **2.1.14**, checked October 30.
+Latest observation: UniFi OS **6.0.17** (SSH) and Network **11.0.99** (UI),
+checked November 3. Network package **11.0.99-37236-1**, Core **6.0.130**, and
+proxy **2.1.14** with matching patched hash were checked October 30 and were
+not reverified during the November 3 check.
 See the current v3.0.1 release notes for immediate post-upgrade findings and limits.
