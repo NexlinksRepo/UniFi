@@ -264,6 +264,12 @@ download_package() {
     done < <(tr ',' '\n' <<<"$deps")
 }
 download_package "$MATCH" unifi
+# Discovery is finished. Remove the token header before allowing APT's _apt
+# account to traverse this root-owned directory and read verified public debs.
+# Keep directory listing, writes and all other working files restricted.
+rm -f "$WORK/auth"
+chmod 711 "$WORK"
+chmod 644 "${PACKAGES[@]}"
 echo 'APT dry run: complete verified local package set (removals forbidden).'
 printf '  %s\n' "${PACKAGES[@]}"
 if ! apt-get --simulate --no-remove install "${PACKAGES[@]}"; then

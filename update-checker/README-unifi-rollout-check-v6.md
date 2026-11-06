@@ -80,6 +80,8 @@ Back up the console and Network configuration, review release notes and mandator
 
 The dry run checks package resolution, not runtime health, firmware upgrade paths or application data migration. APT is one transaction for dependency resolution, not an atomic rollback guarantee: an interrupted or failed install can leave partial changes. The final install may fail if repositories, locks or system state change after simulation. Do not run other updates concurrently. A v6 lock prevents two copies of this script from running together; it does not block the console UI updater.
 
+After all Network downloads are verified, the token header is removed. The root-owned working directory permits traversal (mode 0711), and only verified package files become readable (mode 0644), allowing APT to acquire them as `_apt` without its root-fallback permission notice. Directory listing and writes remain restricted; other working files remain private. APT warnings and errors are not filtered or suppressed.
+
 Working directories are printed and retained. Remove the specific directory after reviewing it and finishing the update. `/tmp` contents may disappear on reboot. Do not share the token or firmware YAML when reporting problems.
 
 ## Validation status
@@ -88,4 +90,4 @@ Bash syntax passed locally and on a Dream Machine Pro Max. Local mocked checks c
 
 The owner supplied live-console output showing authenticated discovery, selection and verified download of Network 11.1.47-37925-1, followed by the original duplicate-channel dependency refusal. A subsequent authenticated read-only query confirmed identical Matter Controller 1.0.0 URLs and SHA256 checksums across beta, release-candidate and release channels. The correction was staged on that console and its checksum verified. Installed Matter Controller 1.0.0 was confirmed through package status. These checks did not perform an installation.
 
-The corrected complete dependency/download/APT workflow and actual Network or OS installation have **not** been independently verified end to end on a live console. Stable is the owner's release designation; it does not assert universal compatibility or completed installation testing. See [release notes](RELEASE-NOTES-v6.md) for the evidence and limits.
+The owner subsequently supplied successful APT output for Network 11.1.47-37925-1 with Matter Controller 1.0.0 and confirmed that the application looks healthy. This is owner-reported live installation evidence; it was not independently observed end to end. The later `_apt` readability correction has not been exercised in a live installation. UniFi OS installation remains unverified. Stable is the owner's release designation; it does not assert universal compatibility or completed installation testing. See [release notes](RELEASE-NOTES-v6.md) for the evidence and limits.

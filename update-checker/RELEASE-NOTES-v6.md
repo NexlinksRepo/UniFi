@@ -14,6 +14,10 @@ Release date: November 6, 2026. Status: **latest stable**, designated by the pro
 - Exact selected OS URL passed to the firmware updater after the same default-No confirmation.
 - Unique restricted working directories, temporary token header cleanup and a concurrent-v6 lock.
 
+## APT notice correction — November 6, 2026
+
+After verification, v6 removes the token header and makes only the downloaded packages readable to APT through a root-owned traversable directory. This addresses the `_apt` permission notice without disabling the APT sandbox or hiding output. Other working files retain private permissions.
+
 ## Validation on November 6, 2026
 
 - Bash syntax passed locally and on a Dream Machine Pro Max; staged script checksums matched.
@@ -22,7 +26,7 @@ Release date: November 6, 2026. Status: **latest stable**, designated by the pro
 - A read-only authenticated query confirmed that Matter Controller 1.0.0 appeared under beta, release-candidate and release with the same download URL and SHA256. This established the cause of the refusal and informed the correction.
 - Read-only package status confirmed Matter Controller 1.0.0 installed. The correction was staged and syntax checked without running an updater or installing packages.
 
-The corrected full dependency/APT preparation path and actual Network/OS installation remain unverified end to end on a live console. No successful installation, reboot, rollback or broad hardware compatibility claim is made. An API record is not evidence of normal rollout eligibility. All returned channels, including beta and older versions, may be shown.
+The owner subsequently supplied APT output showing successful Network 11.1.47-37925-1 installation and installed Matter Controller 1.0.0, then confirmed the application looks healthy. This is owner-reported evidence rather than independently observed end-to-end execution. The later APT readability correction has not been exercised during a live installation. UniFi OS installation, reboot, rollback and broad hardware compatibility remain unverified. An API record is not evidence of normal rollout eligibility. All returned channels, including beta and older versions, may be shown.
 
 ## Use and limitations
 

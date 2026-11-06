@@ -21,7 +21,7 @@ Run as root directly on a UniFi OS console. Network mode recursively prepares ex
 
 OS mode uses the console's product/platform and invokes `ubnt-systool fwupdate` with the selected exact firmware URL only after confirmation. The console may reboot. Both paths default to declining installation.
 
-Stable is the owner's release classification. Syntax and simulated safety checks passed, and limited live-console discovery evidence is documented. The corrected full installation workflow has not been independently verified end to end. Read the complete guide before proceeding.
+Stable is the owner's release classification. Syntax and simulated safety checks passed, and limited live-console discovery evidence is documented. The owner reported a successful Network 11.1.47 installation and healthy application; end-to-end execution was not independently observed. The follow-up APT readability correction has not been tested in a live install; OS installation remains unverified. Read the complete guide before proceeding.
 
 ## Previous release
 
