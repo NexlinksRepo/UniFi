@@ -1,5 +1,5 @@
 # UniFi projects
-**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](nextdns-device-names/RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
+**NextDNS Device Names latest stable: v3.0.1**, published October 28, 2026. [Release notes](nextdns-device-names/RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
 
 Independent UniFi administration tools and integrations by Phil Kinsley.
 
@@ -7,7 +7,7 @@ Independent UniFi administration tools and integrations by Phil Kinsley.
 
 | Project | Purpose | Stable | Beta | Experimental |
 | --- | --- | --- | --- | --- |
-| [Update Checker](update-checker/) | Discover and optionally install UniFi application and OS updates. | [v5 stable](update-checker/README.md) | — | — |
+| [Update Checker](update-checker/) | Discover and optionally install UniFi application and OS updates. | [v6 stable](update-checker/README.md) | â€” | â€” |
 | [NextDNS Device Names](nextdns-device-names/) | Add UniFi client names and profile-scoped device IDs to NextDNS DNS-over-HTTPS requests. | [v3.0.1 stable](nextdns-device-names/) | [v2.0.0](nextdns-device-names/docs/versions.md#v200--beta) | [v3.0.0](nextdns-device-names/docs/versions.md#v300--experimental) |
 
 
@@ -25,7 +25,7 @@ UniFi/
   RELEASES.md                Version/status directory and repository updates
   CHANGELOG.md               Link to project change history
   LICENSE                    Repository license
-  update-checker/            UniFi Update Checker v5 stable script and usage guide
+  update-checker/            UniFi Update Checker v6 stable, prior v5, and documentation
   nextdns-device-names/
     README.md                Project overview and downloads
     CHANGELOG.md             NextDNS changes

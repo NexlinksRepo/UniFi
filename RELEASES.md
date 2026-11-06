@@ -1,5 +1,11 @@
 # Release directory
-**Latest stable: v3.0.1**, published October 28, 2026. [Release notes](nextdns-device-names/RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
+**NextDNS Device Names latest stable: v3.0.1**, published October 28, 2026. [Release notes](nextdns-device-names/RELEASE-NOTES-v3.0.1.md) include reboot/DNS Shield results, known-good versions, and upgrade limitations.
+
+## UniFi Update Checker
+
+**Latest stable: v6**, designated November 6, 2026. [Script](update-checker/unifi-rollout-check-v6.sh) · [Full guide](update-checker/README-unifi-rollout-check-v6.md) · [Release notes and validation limits](update-checker/RELEASE-NOTES-v6.md).
+
+Includes version-free menus, installed-version detection, exact recursive dependency preparation, duplicate-channel consolidation, checksum checks and interactive installation. Syntax and simulated safety checks passed; limited console discovery was observed. Corrected end-to-end installation remains unverified. [v5](update-checker/README-unifi-rollout-check-v5.md) is preserved as the previous stable version.
 
 ## NextDNS Device Names
 
@@ -21,9 +27,9 @@ inside those snapshots retain their original wording.
 
 Use a project prefix for Git tags because this repository can contain multiple projects:
 
-- `nextdns-device-names/v2.0.0` — beta pre-release.
-- `nextdns-device-names/v3.0.0` — experimental pre-release.
-- `nextdns-device-names/v3.0.1` — reserved here as the planned next stable version; not yet published or tagged.
+- `nextdns-device-names/v2.0.0` â€” beta pre-release.
+- `nextdns-device-names/v3.0.0` â€” experimental pre-release.
+- `nextdns-device-names/v3.0.1` â€” reserved here as the planned next stable version; not yet published or tagged.
 
 The version number and maturity status are recorded separately. Keep v2.0.0 and
 v3.0.0 unchanged rather than renaming the existing packages with new suffixes.
@@ -34,7 +40,7 @@ See [GitHub Releases](https://github.com/NexlinksRepo/UniFi/releases),
 [project change history](nextdns-device-names/CHANGELOG.md), and
 [version history](nextdns-device-names/docs/versions.md).
 
-## Repository update — October 26, 2026
+## Repository update â€” October 26, 2026
 
 - Established the top-level README as a directory for UniFi projects.
 - Put current NextDNS documentation and change history in the project folder.
